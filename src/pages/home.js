@@ -1,16 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, useColorScheme, View} from 'react-native';
 
-import {Container,  Title, Left, Right, Body} from 'native-base';
+import {Container, Button, Left, Right, Body} from 'native-base';
+
+import {Actions} from 'react-native-router-flux';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
@@ -19,50 +13,156 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+
 //components
 import HeaderComponent from '../components/header';
+import TaskBox from '../components/taskBox';
+import AddTaskScreen from './addTaskScreen';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
+
+  const addTaskHandle = () => {
+    Actions.addTaskScreen();
+  };
+
+  useEffect(async () => {
+    forceUpdate();
+  }, [forceUpdate])
+
   return (
     <View style={styles.container}>
-      <Text>Rockstar</Text>
       <View style={styles.containerIn1}>
-        <Text>1</Text>
+        <HeaderComponent />
       </View>
-      <View style={styles.containerIn2}>
-        <Text>1</Text>
-      </View>
+      <Container style={styles.containerIn2}>
+        <View style={styles.inContainer1}>
+          <View style={styles.leftInTopSquareDateDetailsArticle}>
+            <Body style={styles.dateAtDayMouthYearArticle}>
+              <Left />
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: 'gray',
+                }}>
+                May 01, 2021
+              </Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: '900',
+                }}>
+                Today
+              </Text>
+              <Right />
+            </Body>
+          </View>
+          <View style={styles.rightInTopSquareDateDetailsArticle}>
+            <Body style={styles.addTaskButtonCss}>
+              <Left />
+              <Button warning onPress={addTaskHandle}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontWeight: '600',
+                  }}>
+                  {' '}
+                  + Add Task{' '}
+                </Text>
+              </Button>
+              <Right />
+            </Body>
+          </View>
+        </View>
+        <View style={styles.inContainer2}>
+          <Text>Date</Text>
+        </View>
+      </Container>
       <View style={styles.containerIn3}>
-        <Text>1</Text>
+        <ScrollView>
+          <TaskBox />
+          <TaskBox />
+          <TaskBox />
+        </ScrollView>
       </View>
-      <View style={styles.containerIn4}>
-        <Text>1</Text>
-      </View>
+      <View style={styles.containerIn4} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: hp('5%'),
     flex: 1,
-    backgroundColor: 'orange',
+    backgroundColor: '#f0f4fd',
   },
   containerIn1: {
-    flex: 1,
-    backgroundColor: 'pink',
+    flex: 0.2,
   },
   containerIn2: {
     flex: 1,
-    backgroundColor: 'orange',
   },
   containerIn3: {
-    flex: 1,
-    backgroundColor: 'orange',
+    flex: 2,
+    width: '100%',
   },
   containerIn4: {
+    flex: 0.5,
+    display: 'none',
+  },
+  inContainer1: {
     flex: 1,
-    backgroundColor: 'gray',
+    backgroundColor: '#f0f4fd',
+    flexDirection: 'row',
+  },
+  inContainer2: {
+    flex: 0.5,
+  },
+  leftInTopSquareDateDetailsArticle: {
+    flex: 1,
+    backgroundColor: '#f0f4fd',
+  },
+  rightInTopSquareDateDetailsArticle: {
+    flex: 1,
+  },
+  dateAtDayMouthYearArticle: {
+    marginLeft: wp('-20%'),
+  },
+  textCss: {
+    fontWeight: '600',
+    fontSize: 20,
+  },
+  square: {
+    width: wp('15%'),
+    height: hp('7%'),
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'black',
+    borderRadius: hp('1%'),
+  },
+  squareWrap: {
+    marginBottom: hp('10%'),
+  },
+  sumCss: {
+    fontSize: hp('4%'),
+  },
+  addListCss: {
+    fontSize: 17,
+    marginTop: hp('2%'),
+  },
+  addTaskButtonCss: {
+    marginRight: wp('-20%'),
   },
 });
 
