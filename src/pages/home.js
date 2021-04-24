@@ -8,6 +8,8 @@ import {Actions} from 'react-native-router-flux';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
+import CalendarStrip from 'react-native-calendar-strip';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -27,6 +29,33 @@ import TaskBox from '../components/taskBox';
 import AddTaskScreen from './addTaskScreen';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CalendarStripSquare = () => (
+    <View style={{
+        flex: 1,
+        borderBottomWidth: 1,
+        marginLeft: wp('5%'),
+        marginRight: wp('5%'),
+        borderColor: 'silver'
+    }}>
+    <CalendarStrip
+      scrollable
+    style={{
+        flex: 1,
+        backgroundColor: '#f0f4fd',
+    }}
+        markedDatesStyle={{backgroundColor: 'blue'}}
+      calendarColor={'#3343CE'}
+      calendarHeaderStyle={{color: 'black'}}
+      dateNumberStyle={{color: 'black'}}
+    dateNameStyle={{
+        color: 'silver',
+        fontSize: hp('1.5%')
+    }}
+      iconContainer={{flex: 0.1}}
+    />
+  </View>
+);
 
 const Home = () => {
   const [, updateState] = useState();
@@ -70,11 +99,19 @@ const Home = () => {
           <View style={styles.rightInTopSquareDateDetailsArticle}>
             <Body style={styles.addTaskButtonCss}>
               <Left />
-              <Button warning onPress={addTaskHandle}>
+              <Button warning style={{
+                backgroundColor: '#ef6850',
+                  width: wp('30%'),
+                  marginRight: wp('10%'),
+                      justifyContent: 'center',
+                  borderRadius: hp('1.5%'),
+              }} onPress={addTaskHandle}>
                 <Text
                   style={{
                     color: 'white',
-                    fontWeight: '600',
+                    fontWeight: '800',
+                      textAlign: 'center',
+                      justifyContent: 'center',
                   }}>
                   {' '}
                   + Add Task{' '}
@@ -85,7 +122,7 @@ const Home = () => {
           </View>
         </View>
         <View style={styles.inContainer2}>
-          <Text>Date</Text>
+          <CalendarStripSquare />
         </View>
       </Container>
       <View style={styles.containerIn3}>
@@ -126,7 +163,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   inContainer2: {
-    flex: 0.5,
+    flex: 1,
+    backgroundColor: '#f0f4fd',
   },
   leftInTopSquareDateDetailsArticle: {
     flex: 1,

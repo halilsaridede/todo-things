@@ -1,6 +1,4 @@
-import React, {
-useState, useCallback
-} from 'react'
+import React, {useState, useCallback} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -11,22 +9,20 @@ import {
   View,
   KeyboardAvoidingView,
   Dimensions,
-} from 'react-native'
+} from 'react-native';
 
 import {
 Container, Button, Left, Input, Body
-} from 'native-base'
+} from 'native-base';
 
-import Icon from 'react-native-vector-icons/dist/FontAwesome'
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-import {
-Actions
-} from 'react-native-router-flux'
+import {Actions} from 'react-native-router-flux';
 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from 'react-native-responsive-screen'
+} from 'react-native-responsive-screen';
 
 import {
   Menu,
@@ -34,9 +30,12 @@ import {
   MenuOptions,
   MenuOption,
   MenuTrigger,
-} from 'react-native-popup-menu'
+} from 'react-native-popup-menu';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Moment from 'moment';
 
 // components
 import HeaderComponent from '../components/header';
@@ -46,34 +45,54 @@ import CategoryBox from '../components/categoryBox';
 const {height} = Dimensions.get('window');
 
 const AddTaskScreen = () => {
-  const [taskName, setTaskName] = useState()
-  const [date, setDate] = useState()
-  const [clock, setClock] = useState()
-  const [description, setDescription] = useState()
+  const [taskName, setTaskName] = useState();
+  const [clockText, setClockText] = useState();
+  const [description, setDescription] = useState();
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
+  //DateTimePicker
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const [showDate, setShowDate] = useState('Date not set');
+  const [showTime, setShowTime] = useState('Time not set');
 
-  const dateEnterHandle = async () => {
-    try {
-      const getTaskName = await AsyncStorage.getItem('taskName');
-      const getDescription = await AsyncStorage.getItem('description');
-      alert(getTaskName);
-      alert(getDescription);
-    } catch (error) {
-      console.log(error);
-    }
+  // DateTimePicker
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    Moment.locale('en');
+    let dateFormat = Moment(currentDate).format('DD-MM-YYYY');
+    let timeFormat = Moment(currentDate).format('hh:mm');
+    setShowDate(dateFormat);
+    setShowTime(timeFormat);
   };
+
+  const showMode = currentMode => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+  // DateTimePicker
 
   const taskSaveHandle = async () => {
     if (taskName === '' && description === '') {
       alert('Not null');
     } else {
       try {
-        await AsyncStorage.setItem('taskName', taskName)
-        await AsyncStorage.setItem('description', description)
+        await AsyncStorage.setItem('taskName', taskName);
+        await AsyncStorage.setItem('description', description);
         Actions.home();
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
       setTaskName('');
       setDescription('');
@@ -134,13 +153,15 @@ const AddTaskScreen = () => {
               <Text style={styles.dateWrite}>Date</Text>
             </View>
             <View style={styles.dateDetailBox}>
-              <Input
-                onChangeText={text => setDate(text)}
+              <Text
+                //onChangeText={text => setDate(text)}
                 style={styles.dateInputArea}
-                placeholder="April 14, 2021"
-              />
+                // placeholder="April 14, 2021"
+              >
+                {showDate}
+              </Text>
               <Icon
-                onPress={dateEnterHandle}
+                onPress={showDatepicker}
                 name="calendar"
                 color="black"
                 style={{
@@ -159,13 +180,15 @@ const AddTaskScreen = () => {
               <Text style={styles.dateWrite}>Clock</Text>
             </View>
             <View style={styles.dateDetailBox}>
-              <Input
-                onChangeText={text => setClock(text)}
+              <Text
+                //onChangeText={text => setClockText(text)}
                 style={styles.dateInputArea}
-                placeholder="10:00 PM"
-              />
+                //placeholder="10:00 PM"
+              >
+                {showTime}
+              </Text>
               <Icon
-                onPress={dateEnterHandle}
+                onPress={showTimepicker}
                 name="clock-o"
                 color="black"
                 style={{
@@ -175,6 +198,16 @@ const AddTaskScreen = () => {
                 size={20}
               />
             </View>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode={mode}
+                is24Hour={true}
+                display="default"
+                onChange={onChange}
+              />
+            )}
           </View>
           <View
             style={{
@@ -183,7 +216,7 @@ const AddTaskScreen = () => {
             <View style={styles.dateBox}>
               <Text style={styles.dateWrite}>Description</Text>
             </View>
-            <View style={styles.dateDetailBox}>
+            <View style={styles.descriptionBox}>
               <Input
                 style={styles.dateInputArea}
                 onChangeText={text => setDescription(text)}
@@ -223,7 +256,7 @@ const AddTaskScreen = () => {
               borderRadius: hp('1%'),
               marginLeft: wp('3%'),
               marginRight: wp('3%'),
-              marginBottom: hp('2%'),
+              marginBottom: hp('5%'),
             }}>
             <Text
               style={{
@@ -236,32 +269,20 @@ const AddTaskScreen = () => {
         </View>
       </KeyboardAvoidingView>
     </KeyboardAvoidingView>
-  )
-}
-
-/*
-              <Input style={styles.dateInputArea} placeholder="" />
-              <Icon
-                onPress={dateEnterHandle}
-                name="calendar"
-                color="#f0f4fd"
-                style={{
-                  marginTop: hp('2%'),
-                  marginRight: wp('5%'),
-                }}
-                size={20}
-              />
-    * */
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5b57ca',
+    //backgroundColor: '#5b57ca',
+    backgroundColor: 'purple',
     paddingTop: Platform.OS === 'ios' ? hp('5%') : 0,
   },
   topAreaContainer: {
     flex: 0.2,
-    backgroundColor: '#5b57ca',
+    //backgroundColor: '#5b57ca',
+    backgroundColor: 'purple',
   },
   bottomAreaContainer: {
     flex: 1,
@@ -296,9 +317,15 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   dateInputArea: {
+    flex: 1,
     borderBottomWidth: 1,
     borderColor: 'silver',
     marginLeft: wp('3%'),
+    marginTop: hp('3%'),
+  },
+  descriptionBox: {
+    flex: 1,
+    marginRight: wp('10%'),
   },
 });
 
