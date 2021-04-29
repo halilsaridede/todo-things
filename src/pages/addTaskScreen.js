@@ -57,6 +57,12 @@ const AddTaskScreen = () => {
   const [showDate, setShowDate] = useState('Date not set');
   const [showTime, setShowTime] = useState('Time not set');
 
+    // array set
+    const taskNameArray = [];
+    const descriptionArray = [];
+    const dateArray = [];
+    const timeArray = [];
+
   // DateTimePicker
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -84,12 +90,29 @@ const AddTaskScreen = () => {
   // DateTimePicker
 
   const taskSaveHandle = async () => {
-    if (taskName === '' && description === '') {
-      alert('Not null');
-    } else {
+    if (taskName === '') {
+      alert('Please enter task name');
+    }
+    else if (showDate === 'Date not set') {
+     alert('Please enter date');
+    }
+    else if (showTime === 'Time not set') {
+     alert('Please enter time');
+    }
+    else if (description === '') {
+     alert('Please enter description');
+    }
+    else {
       try {
-        await AsyncStorage.setItem('taskName', taskName);
-        await AsyncStorage.setItem('description', description);
+        let taskNameArrayWrap = taskNameArray.push(taskName);
+        let descriptionArrayWrap = descriptionArray.push(description);
+        let dateArrayWrap = dateArray.push(showDate);
+        let timeArrayWrap = timeArray.push(showTime);
+        // Asyncstorage
+        await AsyncStorage.setItem('taskName', JSON.stringify(taskNameArrayWrap));
+        await AsyncStorage.setItem('showDateStorage', JSON.stringify(dateArrayWrap));
+        await AsyncStorage.setItem('showTimeStorage', JSON.stringify(timeArrayWrap));
+        await AsyncStorage.setItem('description', JSON.stringify(descriptionArrayWrap));
         Actions.home();
       } catch (error) {
         console.log(error);
@@ -211,12 +234,16 @@ const AddTaskScreen = () => {
           </View>
           <View
             style={{
-              flex: 0.12,
+              flex:  Platform.OS === 'ios' ? 0.12 : 0.14,
             }}>
-            <View style={styles.dateBox}>
+          <View style={[styles.dateBox], {
+              position: 'absolute',
+          }}>
               <Text style={styles.dateWrite}>Description</Text>
             </View>
-            <View style={styles.descriptionBox}>
+            <View style={[styles.descriptionBox, {
+                zIndex: 2,
+            }]}>
               <Input
                 style={styles.dateInputArea}
                 onChangeText={text => setDescription(text)}

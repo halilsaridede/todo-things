@@ -24,16 +24,23 @@ import {
 const TaskBox = () => {
   const [taskNameState, setTaskNameState] = useState();
   const [descriptionState, setDescriptionState] = useState();
+  const [showDateStorage, setShowDateStorage] = useState();
+  const [showTimeStorage, setShowTimeStorage] = useState();
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
   useEffect(async () => {
     try {
-      const taskName = await AsyncStorage.getItem('taskName')
-      const description = await AsyncStorage.getItem('description')
+      const taskName = await AsyncStorage.getItem('taskName');
+      const description = await AsyncStorage.getItem('description');
+      const showDateStorage = await AsyncStorage.getItem('showDateStorage');
+      const showTimeStorage = await AsyncStorage.getItem('showTimeStorage');
       if (taskName !== null) {
-        setTaskNameState(taskName);
-        setDescriptionState(description);
+        setTaskNameState(JSON.parse(taskName));
+        alert(taskNameState);
+        setDescriptionState(JSON.parse(description));
+        setShowDateStorage(JSON.parse(showDateStorage));
+        setShowTimeStorage(JSON.parse(showTimeStorage));
         forceUpdate();
       }
     } catch (e) {
@@ -141,7 +148,7 @@ const TaskBox = () => {
               style={{
                 marginLeft: 5,
               }}>
-              Clock
+              {showDateStorage}
             </Text>
           </View>
           <View style={styles.inDateBox}>
@@ -150,7 +157,7 @@ const TaskBox = () => {
               style={{
                 marginLeft: 5,
               }}>
-              Date
+              {showTimeStorage}
             </Text>
           </View>
         </View>

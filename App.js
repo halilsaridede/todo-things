@@ -33,9 +33,9 @@ const App = () => {
     <Router>
       <Drawer drawerWidth={250} contentComponent={SideBar}>
         <Scene key="DrawerMenu">
-          <Scene key="home" component={HomeScreen} hideNavBar={true} />
+          <Scene key="home" component={Trials} hideNavBar={true} />
           <Scene key="addTaskScreen" component={AddTaskScreen} hideNavBar={true} />
-          <Scene key="trials" component={Trials} hideNavBar={true} />
+          <Scene key="trials" component={HomeScreen} hideNavBar={true} />
         </Scene>
       </Drawer>
     </Router>

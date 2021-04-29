@@ -44,6 +44,7 @@ const CalendarStripSquare = () => (
         flex: 1,
         backgroundColor: '#f0f4fd',
     }}
+    selectedDate={new Date()}
         markedDatesStyle={{backgroundColor: 'blue'}}
       calendarColor={'#3343CE'}
       calendarHeaderStyle={{color: 'black'}}
