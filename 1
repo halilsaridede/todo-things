@@ -29,6 +29,7 @@ import {
   MenuProvider,
   MenuOptions,
   MenuOption,
+  MenuTrigger,
 } from 'react-native-popup-menu';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,32 +45,14 @@ import CategoryBox from '../components/categoryBox';
 const {height} = Dimensions.get('window');
 
 const AddTaskScreen = () => {
-   let [taskDetailItems, setTaskDetailItems] = useState({
-    taskNameItem: [],
-    descriptionItem: [],
-    showDateItem: [],
-    showTimeItem: [],
-   });
-
-  const [taskNameInput, setTaskNameInput] = useState('');
-  const [description, setDescription] = useState('');
-  const [showDate, setShowDate] = useState('Date not set');
-  const [showTime, setShowTime] = useState('Time not set');
-    /*
+  const [taskNameInput, setTaskNameInput] = useState();
   let [taskNameItems, setTaskNameItems] = useState({
     taskNameItem: []
   });
+  const [description, setDescription] = useState();
   let [descriptionItems, setDescriptionItems] = useState({
     descriptionItem: []
   });
-  let [showDateItems, setShowDateItems] = useState({
-    showDateItem: []
-  });
-  let [showTimeItems, setShowTimeItems] = useState({
-    showTimeItem: []
-  });
-  */
-
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
   //DateTimePicker
@@ -77,6 +60,14 @@ const AddTaskScreen = () => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   //Input
+  const [showDate, setShowDate] = useState('Date not set');
+  let [showDateItems, setShowDateItems] = useState({
+    showDateItem: []
+  });
+  const [showTime, setShowTime] = useState('Time not set');
+  let [showTimeItems, setShowTimeItems] = useState({
+    showTimeItem: []
+  });
 
   // DateTimePicker
   const onChange = (event, selectedDate) => {
@@ -105,9 +96,15 @@ const AddTaskScreen = () => {
   // DateTimePicker
 
     const getTaskHandle = async () => {
-        console.log(taskDetailItems);
+        forceUpdate();
+        //items.tasks.map(e => console.log(e));
+        console.log('TASK NAME ' + taskNameItems.taskNameItem);
+        console.log(showDateItems.showDateItem);
+        console.log(showTimeItems.showTimeItem);
+        console.log(descriptionItems.descriptionItem);
         try {
           const itemsTask = await AsyncStorage.getItem("taskNameStorage");
+          //console.log(itemsTask);
           if (itemsTask !== '') {
             let itemsTaskJSONParse = JSON.parse(itemsTask);
             itemsTaskJSONParse.map((item, index) => {
@@ -134,50 +131,79 @@ const AddTaskScreen = () => {
     }
     else {
         try {
-          setTaskDetailItems(prevState => {
-            return {
-              taskNameItem: [...prevState.taskNameItem, taskNameInput],
-              descriptionItem: [...prevState.descriptionItem, description],
-              showDateItem: [...prevState.showDateItem, showDate],
-              showTimeItem: [...prevState.showTimeItem, showTime],
-            };
-          });
-          await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(taskDetailItems));
-            /*
+            //TasknameInput
             setTaskNameItems(prevState => {
                 return {
                     taskNameItem: [...prevState.taskNameItem, taskNameInput]
                 };
             });
             await AsyncStorage.setItem("taskNameStorage", JSON.stringify(taskNameItems.taskNameItem));
+            //DateInput
             setShowDateItems(prevState => {
                 return {
                     showDateItem: [...prevState.showDateItem, showDate]
                 };
             });
             await AsyncStorage.setItem("dateStorage", JSON.stringify(showDateItems.showDateItem));
+            //TimeInput
             setShowTimeItems(prevState => {
                 return {
                     showTimeItem: [...prevState.showTimeItem, showTime]
                 };
             });
             await AsyncStorage.setItem("timeStorage", JSON.stringify(showTimeItems.showTimeItem));
+            //Description
             setDescriptionItems(prevState => {
                 return {
                     descriptionItem: [...prevState.descriptionItem, description]
                 };
             });
-            await AsyncStorage.setItem("descriptionStorage", JSON.stringify(descriptionItems.descriptionItem));
-            */
-
-              setTaskNameInput('');
-              setDescription('');
-              forceUpdate();
-            //Actions.home();
+            await AsyncStorage.setItem("timeStorage", JSON.stringify(showTimeItems.showTimeItem));
         } catch (error) {
           console.log(error);
         }
     }
+      setTaskNameInput('');
+      setDescription('');
+      forceUpdate();
+  };
+
+  const taskSaveHandle = async () => {
+    /*
+    if (taskName === '') {
+      alert('Please enter task name');
+    }
+    else if (showDate === 'Date not set') {
+     alert('Please enter date');
+    }
+    else if (showTime === 'Time not set') {
+     alert('Please enter time');
+    }
+    else if (description === '') {
+     alert('Please enter description');
+    }
+    */
+   // else {
+      try {
+          setTaskNameItems(prevState => {
+              return {
+                  taskNameItems: [...prevState.taskNameItems, taskNameInput]
+              };
+          });
+        // Asyncstorage
+        //await AsyncStorage.setItem('taskName', JSON.stringify(taskNameArrayWrap));
+        await AsyncStorage.setItem("taskNameStorage", JSON.stringify(taskNameItems.taskNameItem));
+        //await AsyncStorage.setItem('showDateStorage', JSON.stringify(dateArrayWrap));
+        //await AsyncStorage.setItem('showTimeStorage', JSON.stringify(timeArrayWrap));
+        //await AsyncStorage.setItem('description', JSON.stringify(descriptionArrayWrap));
+        //Actions.home();
+      } catch (error) {
+        console.log(error);
+      }
+      setTaskNameInput('');
+      setDescription('');
+      forceUpdate();
+    //}
   };
 
   return (
@@ -234,7 +260,9 @@ const AddTaskScreen = () => {
             </View>
             <View style={styles.dateDetailBox}>
               <Text
+                //onChangeText={text => setDate(text)}
                 style={styles.dateInputArea}
+                // placeholder="April 14, 2021"
               >
                 {showDate}
               </Text>
@@ -259,7 +287,9 @@ const AddTaskScreen = () => {
             </View>
             <View style={styles.dateDetailBox}>
               <Text
+                //onChangeText={text => setClockText(text)}
                 style={styles.dateInputArea}
+                //placeholder="10:00 PM"
               >
                 {showTime}
               </Text>
@@ -299,7 +329,8 @@ const AddTaskScreen = () => {
             }]}>
               <Input
                 style={styles.dateInputArea}
-                onChangeText={setDescription}
+                onChangeText={text => setDescription(text)}
+                placeholder=""
                 value={description}
               />
               <Icon
@@ -322,7 +353,7 @@ const AddTaskScreen = () => {
             </View>
             <View style={styles.dateDetailBox}>
             <CategoryBox
-                 displayStateCon="flex"
+                displayState="none"
             />
             </View>
           </View>

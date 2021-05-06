@@ -31,13 +31,12 @@ const TaskBox = () => {
 
   useEffect(async () => {
     try {
-      const taskName = await AsyncStorage.getItem('taskName');
-      const description = await AsyncStorage.getItem('description');
-      const showDateStorage = await AsyncStorage.getItem('showDateStorage');
-      const showTimeStorage = await AsyncStorage.getItem('showTimeStorage');
-      if (taskName !== null) {
+      const taskName = await AsyncStorage.getItem('taskNameStorage');
+      const description = await AsyncStorage.getItem('descriptionStorage');
+      const showDateStorage = await AsyncStorage.getItem('dateStorage');
+      const showTimeStorage = await AsyncStorage.getItem('timeStorage');
+      if (taskName !== '' && description !== '' && showDateStorage !== '' && showTimeStorage !== '') {
         setTaskNameState(JSON.parse(taskName));
-        alert(taskNameState);
         setDescriptionState(JSON.parse(description));
         setShowDateStorage(JSON.parse(showDateStorage));
         setShowTimeStorage(JSON.parse(showTimeStorage));
@@ -46,10 +45,8 @@ const TaskBox = () => {
     } catch (e) {
       console.log(e);
     }
-    setTaskName(taskName);
+      //setTaskName(taskName);
   }, [forceUpdate])
-
-  const getData = async () => {}
 
   return (
     <View style={styles.container}>
@@ -108,8 +105,8 @@ const TaskBox = () => {
                 }}>
                 <MenuProvider>
                   <Menu onSelect={value => alert(`Selected number: ${value}`)}>
-                    <MenuTrigger
-                      text={
+                      <MenuTrigger>
+                          <Text>
                         <Icon
                           name="ellipsis-v"
                           color="gray"
@@ -118,8 +115,8 @@ const TaskBox = () => {
                           }}
                           size={20}
                         />
-                      }
-                    />
+                          </Text>
+                      </MenuTrigger>
                     <MenuOptions
                       style={{
                         justifyContent: 'flex-start',
@@ -143,7 +140,7 @@ const TaskBox = () => {
         </View>
         <View style={styles.taskBoxSection3}>
           <View style={styles.inClockBox}>
-            <Icon onPress={getData} name="clock-o" color="black" size={20} />
+            <Icon name="clock-o" color="black" size={20} />
             <Text
               style={{
                 marginLeft: 5,
