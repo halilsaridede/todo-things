@@ -129,8 +129,6 @@ const Home = () => {
       <View style={styles.containerIn3}>
         <ScrollView>
           <TaskBox />
-          <TaskBox />
-          <TaskBox />
         </ScrollView>
       </View>
       <View style={styles.containerIn4} />

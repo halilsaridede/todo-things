@@ -22,131 +22,42 @@ import {
 } from 'react-native-responsive-screen';
 
 const TaskBox = () => {
-  const [taskNameState, setTaskNameState] = useState([]);
-  const [descriptionState, setDescriptionState] = useState([]);
-  const [showDateState, setShowDateState] = useState([]);
-  const [showTimeState, setShowTimeState] = useState([]);
-  const [taskDetailsState, setTaskDetailsState] = useState([]);
+  const [taskNameState, setTaskNameState] = useState();
+  const [descriptionState, setDescriptionState] = useState();
+  const [showDateStorage, setShowDateStorage] = useState();
+  const [showTimeStorage, setShowTimeStorage] = useState();
+  const [taskDetailsState, setTaskDetailsState] = useState();
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
-    let taskDetails;
 
   useEffect(async () => {
     try {
-      taskDetails = await AsyncStorage.getItem('taskDetailsStorage');
+      let taskDetails = await AsyncStorage.getItem('taskDetailsStorage');
+        //console.log(taskDetails);
       setTaskDetailsState(JSON.parse(taskDetails));
-      console.log(taskDetailsState);
-        //parse = JSON.parse(taskDetails);
-        //parse.taskNameItem.map(v => console.log(v))
-      //taskNameState && taskNameState.map((val, index) => console.log(val));
-      /*
-      const trial = async () => await AsyncStorage.getItem('taskDetailsStorage');
-      trial()
-      .then(response => JSON.parse(response))
-      .then(data => setTaskDetailsState(data));
-      console.log(taskDetailsState);
-      */
-      /*
-      taskDetails = await AsyncStorage.getItem('taskDetailsStorage');
-      setTaskDetailsState(JSON.parse(taskDetails));
-      //taskNameState && taskNameState.map((val, index) => console.log(val));
-       */
-      /*
-      const taskNameData = async () => await AsyncStorage.getItem('taskNameStorage');
-      taskNameData()
-      .then(response => JSON.parse(response))
-      .then(data => setTaskNameState(data));
-      taskNameState.map(val => console.log(val))
-
-      const descriptionData = async () => await AsyncStorage.getItem('descriptionStorage');
-      descriptionData()
-      .then(response => JSON.parse(response))
-      .then(data => setDescriptionState(data));
-      console.log(descriptionState);
-
-      const dateData = async () => await AsyncStorage.getItem('dateStorage');
-      dateData()
-      .then(response => JSON.parse(response))
-      .then(data => setShowDateState(data));
-      console.log(showDateState);
-
-      const timeData = async () => await AsyncStorage.getItem('timeStorage');
-      timeData()
-      .then(response => JSON.parse(response))
-      .then(data => setShowTimeState(data));
-      console.log(showTimeState);
-      */
 
         /*
-      const taskNameData = async () => await AsyncStorage.getItem('taskDetailsStorage');
-      taskNameData()
-      .then(response => JSON.parse(response))
-      .then(data => setTaskDetailsState(data));
-      //taskDetailsState && taskDetailsState.map(val => console.log(val))
-      console.log(taskDetailsState);
-      */
-
-      //taskDetailsState.map(val => console.log(val))
-      /*
-      const taskDetails = await AsyncStorage.getItem("taskDetailsStorage");
-      setTaskDetailsState(JSON.parse(taskDetails));
-      console.log(taskDetailsState.descriptionItem);
-      */
-      /*
+      const taskName = await AsyncStorage.getItem('taskNameStorage');
       const description = await AsyncStorage.getItem('descriptionStorage');
       const showDateStorage = await AsyncStorage.getItem('dateStorage');
       const showTimeStorage = await AsyncStorage.getItem('timeStorage');
-      setDescriptionState(JSON.parse(description));
-      console.log(description);
-      setShowDateStorage(JSON.parse(showDateStorage));
-      console.log(showDateStorage);
-      setShowTimeStorage(JSON.parse(showTimeStorage));
-      console.log(showTimeStorage);
       */
+        //if (taskName !== '' && description !== '' && showDateStorage !== '' && showTimeStorage !== '') {
+          /*
+        setTaskNameState(JSON.parse(taskName));
+        setDescriptionState(JSON.parse(description));
+        setShowDateStorage(JSON.parse(showDateStorage));
+        setShowTimeStorage(JSON.parse(showTimeStorage));
+        */
+        //}
     } catch (e) {
       console.log(e);
     }
       //setTaskName(taskName);
   }, []);
 
-  /*
-
-  const TaskNamePrint = () => {
-    return taskNameState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-
-  const DescriptionPrint = () => {
-    return descriptionState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-
-  const DatePrint = () => {
-    return showDateState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-
-  const TimePrint = () => {
-    return showTimeState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-  */
-
-  /*
-  return taskNameState.map(val => (
+  return (
     <View style={styles.container}>
       <View style={styles.containerBox}>
         <View style={styles.taskBoxSection1}>
@@ -174,7 +85,9 @@ const TaskBox = () => {
                     marginTop: hp('1%'),
                   }}>
                 <Text style={styles.taskTitle}>{
-                   <TaskNamePrint />
+                    //taskNameState
+                    "asdsad"
+
                 }</Text>
                 </View>
               </View>
@@ -190,7 +103,8 @@ const TaskBox = () => {
                   }}>
                   <Text style={styles.taskDetailsWrite}>
                       {
-                        <DescriptionPrint />
+                          //trial.descriptionItem 
+                          "asdsa"
                       }
                   </Text>
                 </View>
@@ -247,8 +161,8 @@ const TaskBox = () => {
               style={{
                 marginLeft: 5,
               }}>
-            {
-              <DatePrint />
+            {//showDateStorage
+            "asdsad"
             }
             </Text>
           </View>
@@ -267,27 +181,8 @@ const TaskBox = () => {
         </View>
       </View>
     </View>
-    ))
-    */
-
-    //return Object.values(parse).taskNameItem.map((val, ind) => (
-
-    const Printer = () => {
-        return taskDetailsState.map(val => (
-            <View style={{flexDirection: 'row'}}>
-                <Text>{val.descriptionItem}</Text>
-            </View>
-       ))
-    };
-
-    return taskDetailsState && taskDetailsState.map(val => (
-            <View style={{flexDirection: 'column'}}>
-                {val.descriptionItem.map(value => (
-                    <Text>{value}</Text>
-                ))}
-            </View>
-       ))
-};
+  );
+}
 
 const styles = StyleSheet.create({
   container: {

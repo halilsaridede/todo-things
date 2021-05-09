@@ -44,18 +44,24 @@ import CategoryBox from '../components/categoryBox';
 const {height} = Dimensions.get('window');
 
 const AddTaskScreen = () => {
-   let [taskDetailItems, setTaskDetailItems] = useState({
+  let [taskDetailItems, setTaskDetailItems] = useState({
     taskNameItem: [],
     descriptionItem: [],
     showDateItem: [],
     showTimeItem: [],
-   });
-
+  });
+ /*
+  let [taskDetail, setTaskDetail] = useState([
+      { id: [], value: [] },
+  ]);
+  */
+  const [task, setTask] = useState([]);
+  const [taskDetailsState, setTaskDetailsState] = useState([]);
   const [taskNameInput, setTaskNameInput] = useState('');
   const [description, setDescription] = useState('');
   const [showDate, setShowDate] = useState('Date not set');
   const [showTime, setShowTime] = useState('Time not set');
-    /*
+  /*
   let [taskNameItems, setTaskNameItems] = useState({
     taskNameItem: []
   });
@@ -67,6 +73,16 @@ const AddTaskScreen = () => {
   });
   let [showTimeItems, setShowTimeItems] = useState({
     showTimeItem: []
+  });
+  */
+  /*
+  const [collection, setCollection] = useState({
+    taskNameItem: {
+      item: [],
+    },
+    description: {
+      item: [],
+    },
   });
   */
 
@@ -105,20 +121,55 @@ const AddTaskScreen = () => {
   // DateTimePicker
 
     const getTaskHandle = async () => {
-        console.log(taskDetailItems);
         try {
-          const itemsTask = await AsyncStorage.getItem("taskNameStorage");
+          const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
+          let parse = JSON.parse(itemsTask);
+            console.log(parse)
+            //parse.map(c => console.log(c))
+            /*
+          const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
+          let parse = JSON.parse(itemsTask);
+          parse.taskNameItem.map(val => console.log(val))
+          */
+          //taskDetail.map(v => console.log(v))
+          /*
+          const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
+          let itemsTaskParse = JSON.parse(itemsTask);
+          */
+          /*
+          Object.entries(itemsTaskParse).map(val =>
+            val.map(v => console.log(v))
+          )
+          */
+            //Object.values(collection).map(val => console.log(val.item))
+          //let collectionAssign = Object.keys(collection);
+          //collection.map(val => console.log(val))
+          /*
+          const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
+          let itemsTaskParse = JSON.parse(itemsTask);
+          setTaskDetailsState(itemsTaskParse);
+          taskDetailsState && taskDetailsState.map(val => console.log(val))
+          //let itemsTaskParse = JSON.parse(itemsTask);
+          //console.log(itemsTaskParse.descriptionItem);
+          //let keysItems = Object.keys(itemsTaskParse);
+          /*
+          itemsTaskParse.map((value, index) => {
+            console.log(value);
+          });
+          */
+            /*
           if (itemsTask !== '') {
             let itemsTaskJSONParse = JSON.parse(itemsTask);
             itemsTaskJSONParse.map((item, index) => {
                 // console.log(item);
             });
           }
+          */
         } catch (error) {
           console.log(error);
         }
     };
-
+    let arrayItems = [];
   const saveHandle = async () => {
     if (taskNameInput === '') {
       alert('Please enter task name');
@@ -142,38 +193,84 @@ const AddTaskScreen = () => {
               showTimeItem: [...prevState.showTimeItem, showTime],
             };
           });
-          await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(taskDetailItems));
+            //arrayItems.push(taskDetailItems);
+            setTask(
+                [taskDetailItems]
+              );
+            await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(task));
+          /*
+          setTaskDetail(prevState => {
+            taskDetail[0].id.push([...prevState.id, taskNameInput]);
+            taskDetail[0].value.push([...prevState.value, description]);
+            */
             /*
+            return {
+              id: [...prevState.id, taskNameInput],
+              value: [...prevState.value, description],
+            };
+          });
+          await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(taskDetailItems));
+          */
+          /*
+          setCollection(prevState => {
+            return {
+              taskNameItem: [...prevState.taskNameItem, taskNameInput],
+              description: [...prevState.taskNameItem, description],
+            }
+          });
+          await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(collection));
+          */
+          /*
+          await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify({
+            task: [
+              taskName: [taskNameInput],
+              description: [description],
+            ]
+          }));
+          */
+          /*
+          setTaskDetailItems(prevState => {
+            return {
+              items: {taskNameItem: [...prevState.items.taskNameItem, taskNameInput],
+                      descriptionItem: [...prevState.items.descriptionItem, description]}
+              items: {taskNameItem: [taskNameInput], descriptionItem: [description]}
+            }
+          });
+           */
+          /*
+            //TasknameInput
             setTaskNameItems(prevState => {
                 return {
                     taskNameItem: [...prevState.taskNameItem, taskNameInput]
                 };
             });
             await AsyncStorage.setItem("taskNameStorage", JSON.stringify(taskNameItems.taskNameItem));
+            //DateInput
             setShowDateItems(prevState => {
                 return {
                     showDateItem: [...prevState.showDateItem, showDate]
                 };
             });
             await AsyncStorage.setItem("dateStorage", JSON.stringify(showDateItems.showDateItem));
+            //TimeInput
             setShowTimeItems(prevState => {
                 return {
                     showTimeItem: [...prevState.showTimeItem, showTime]
                 };
             });
             await AsyncStorage.setItem("timeStorage", JSON.stringify(showTimeItems.showTimeItem));
+            //Description
             setDescriptionItems(prevState => {
                 return {
                     descriptionItem: [...prevState.descriptionItem, description]
                 };
             });
             await AsyncStorage.setItem("descriptionStorage", JSON.stringify(descriptionItems.descriptionItem));
-            */
-
-              setTaskNameInput('');
-              setDescription('');
-              forceUpdate();
-            //Actions.home();
+        */
+          setTaskNameInput('');
+          setDescription('');
+          forceUpdate();
+          //Actions.home();
         } catch (error) {
           console.log(error);
         }
