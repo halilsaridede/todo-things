@@ -24,15 +24,15 @@ const DateTimePickerComp = () => {
   const showMode = currentMode => {
     setShow(true);
     setMode(currentMode);
-  }
+  };
 
   const showDatepicker = () => {
     showMode('date');
-  }
+  };
 
   const showTimepicker = () => {
     showMode('time');
-  }
+  };
 
   return (
     <View>

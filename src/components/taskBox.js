@@ -23,130 +23,74 @@ import {
 
 const TaskBox = () => {
   const [taskNameState, setTaskNameState] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [descriptionState, setDescriptionState] = useState([]);
   const [showDateState, setShowDateState] = useState([]);
   const [showTimeState, setShowTimeState] = useState([]);
-  const [taskDetailsState, setTaskDetailsState] = useState([]);
+  const [taskDetailsState, setTaskDetailsState] = useState({});
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
-    let taskDetails;
+  let parse;
 
-  useEffect(async () => {
-    try {
-      taskDetails = await AsyncStorage.getItem('taskDetailsStorage');
-      setTaskDetailsState(JSON.parse(taskDetails));
+  const getTaskHandle = async(e) => {
+    //e.preventDefault();
+    //try {
+      await AsyncStorage.getItem('taskDetailsStorage')
+      .then(response => JSON.parse(response))
+      .then(data => {
+        setTaskDetailsState(data)
+        //setIsLoading(false);
+      })
+      .done();
+      //setTaskDetailsState(JSON.parse(taskDetails));
+  //  } catch (err) {
+    //  console.log(err);
+    //}
+  };
+
+  useEffect(async() => {
+      //getTaskHandle();
+      //console.log(taskDetails)
+    //try {
+      await AsyncStorage.getItem('taskDetailsStorage')
+      .then(response => {
+        const parsedTodos = JSON.parse(response);
+        if (!parsedTodos || typeof parsedTodos !== 'object') return;
+        setTaskDetailsState(parsedTodos);
+        setIsLoading(false);
+      })
+      .catch (err =>{
+        console.warn('Error restoring todos from async');
+        console.warn(err);
+      });
       console.log(taskDetailsState);
-        //parse = JSON.parse(taskDetails);
-        //parse.taskNameItem.map(v => console.log(v))
-      //taskNameState && taskNameState.map((val, index) => console.log(val));
+      ///.then(data => setIsLoading(false)
+          //isLoading === false ? setTaskDetailsState(data) : setIsLoading(false)
       /*
-      const trial = async () => await AsyncStorage.getItem('taskDetailsStorage');
-      trial()
-      .then(response => JSON.parse(response))
-      .then(data => setTaskDetailsState(data));
-      console.log(taskDetailsState);
+      let taskDetails = await AsyncStorage.getItem('taskDetailsStorage');
+      setTaskDetailsState(taskDetails);
       */
+      //taskDetails !== null ? taskItem = JSON.parse(taskDetails) : '';
       /*
-      taskDetails = await AsyncStorage.getItem('taskDetailsStorage');
-      setTaskDetailsState(JSON.parse(taskDetails));
-      //taskNameState && taskNameState.map((val, index) => console.log(val));
-       */
+        taskDetails = await AsyncStorage.getItem('taskDetailsStorage');
+        setTaskDetailsState(JSON.parse(taskDetails));
+        taskDetailsState.map(v => console.log(v));
+        */
       /*
-      const taskNameData = async () => await AsyncStorage.getItem('taskNameStorage');
-      taskNameData()
-      .then(response => JSON.parse(response))
-      .then(data => setTaskNameState(data));
-      taskNameState.map(val => console.log(val))
-
-      const descriptionData = async () => await AsyncStorage.getItem('descriptionStorage');
-      descriptionData()
-      .then(response => JSON.parse(response))
-      .then(data => setDescriptionState(data));
-      console.log(descriptionState);
-
-      const dateData = async () => await AsyncStorage.getItem('dateStorage');
-      dateData()
-      .then(response => JSON.parse(response))
-      .then(data => setShowDateState(data));
-      console.log(showDateState);
-
-      const timeData = async () => await AsyncStorage.getItem('timeStorage');
-      timeData()
-      .then(response => JSON.parse(response))
-      .then(data => setShowTimeState(data));
-      console.log(showTimeState);
-      */
-
-        /*
-      const taskNameData = async () => await AsyncStorage.getItem('taskDetailsStorage');
-      taskNameData()
-      .then(response => JSON.parse(response))
-      .then(data => setTaskDetailsState(data));
-      //taskDetailsState && taskDetailsState.map(val => console.log(val))
-      console.log(taskDetailsState);
-      */
-
-      //taskDetailsState.map(val => console.log(val))
-      /*
-      const taskDetails = await AsyncStorage.getItem("taskDetailsStorage");
-      setTaskDetailsState(JSON.parse(taskDetails));
-      console.log(taskDetailsState.descriptionItem);
-      */
-      /*
-      const description = await AsyncStorage.getItem('descriptionStorage');
-      const showDateStorage = await AsyncStorage.getItem('dateStorage');
-      const showTimeStorage = await AsyncStorage.getItem('timeStorage');
-      setDescriptionState(JSON.parse(description));
-      console.log(description);
-      setShowDateStorage(JSON.parse(showDateStorage));
-      console.log(showDateStorage);
-      setShowTimeStorage(JSON.parse(showTimeStorage));
-      console.log(showTimeStorage);
-      */
-    } catch (e) {
-      console.log(e);
-    }
+        const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
+        setTaskDetailsState(JSON.parse(itemsTask));
+        console.log(taskDetailsState);
+        */
+  //  } catch (e) {
+   //   console.log('ERROR ' + e);
+//}
       //setTaskName(taskName);
   }, []);
 
   /*
-
-  const TaskNamePrint = () => {
-    return taskNameState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-
-  const DescriptionPrint = () => {
-    return descriptionState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-
-  const DatePrint = () => {
-    return showDateState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-
-  const TimePrint = () => {
-    return showTimeState.map((val, ind) => (
-      <View>
-        <Text>{val}</Text>
-      </View>
-    ))
-  };
-  */
-
-  /*
-  return taskNameState.map(val => (
+    /*
+    return taskDetailsState && taskDetailsState.map((val, ind) =>
     <View style={styles.container}>
       <View style={styles.containerBox}>
         <View style={styles.taskBoxSection1}>
@@ -173,9 +117,11 @@ const TaskBox = () => {
                     marginRight: wp('3%'),
                     marginTop: hp('1%'),
                   }}>
-                <Text style={styles.taskTitle}>{
-                   <TaskNamePrint />
-                }</Text>
+                {
+                    val.taskNameItem.map((value, index) => (
+                        <Text style={styles.taskTitle}>{value}</Text>
+                    ))
+                }
                 </View>
               </View>
               <View
@@ -188,11 +134,11 @@ const TaskBox = () => {
                     marginLeft: wp('3%'),
                     marginRight: wp('3%'),
                   }}>
-                  <Text style={styles.taskDetailsWrite}>
-                      {
-                        <DescriptionPrint />
-                      }
-                  </Text>
+                {
+                    val.taskNameItem.map((value, index) => (
+                        <Text style={styles.taskDetaiWrite}>{value}</Text>
+                    ))
+                }
                 </View>
               </View>
             </View>
@@ -243,50 +189,158 @@ const TaskBox = () => {
         <View style={styles.taskBoxSection3}>
           <View style={styles.inClockBox}>
             <Icon name="clock-o" color="black" size={20} />
-            <Text
-              style={{
-                marginLeft: 5,
-              }}>
-            {
-              <DatePrint />
-            }
-            </Text>
+                {
+                    val.showDateItem.map((value, index) => (
+                        <Text style={{ marginLeft: 5}}>{value}</Text>
+                    ))
+                }
           </View>
           <View style={styles.inDateBox}>
             <Icon name="calendar" color="black" size={20} />
-            <Text
-              style={{
-                marginLeft: 5,
-              }}>
-            {
-                //showTimeStorage
-                "aadsa"
-            }
-            </Text>
+                {
+                    val.showTimeItem.map((value, index) => (
+                        <Text style={{ marginLeft: 5}}>{value}</Text>
+                    ))
+                }
           </View>
         </View>
       </View>
     </View>
-    ))
+     )
     */
+    //console.log(taskDetailsState);
+    //let convert = Object.entries(taskDetailsState);
+    //convert && convert.map(e => console.log(e))
 
-    //return Object.values(parse).taskNameItem.map((val, ind) => (
 
-    const Printer = () => {
-        return taskDetailsState.map(val => (
-            <View style={{flexDirection: 'row'}}>
-                <Text>{val.descriptionItem}</Text>
+    /*
+ const TaskPrint = () => {
+   return taskDetailsState && taskDetailsState.allTask.map((val, ind) => (
+    <View style={styles.container}>
+      <View style={styles.containerBox}>
+        <View style={styles.taskBoxSection1}>
+          <Text style={styles.categoryName}>Running</Text>
+        </View>
+        <View style={styles.taskBoxSection2}>
+          <View style={styles.taskDetailsBox}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                borderLeftWidth: 1,
+                borderColor: 'orange',
+                borderLeftWidth: 4,
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    marginLeft: wp('3%'),
+                    marginRight: wp('3%'),
+                    marginTop: hp('1%'),
+                  }}>
+                <Text style={styles.taskTitle}>{val.taskNameItem}</Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    marginLeft: wp('3%'),
+                    marginRight: wp('3%'),
+                  }}>
+                <Text style={styles.taskDetaiWrite}>{val.descriptionItem}</Text>
+                </View>
+              </View>
             </View>
-       ))
+            <View
+              style={{
+                flex: 0.2,
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                  marginTop: wp('3%'),
+                }}>
+                <MenuProvider>
+                  <Menu onSelect={value => alert(`Selected number: ${value}`)}>
+                      <MenuTrigger>
+                          <Text>
+                        <Icon
+                          name="ellipsis-v"
+                          color="gray"
+                          style={{
+                            alignSelf: 'flex-end',
+                          }}
+                          size={20}
+                        />
+                          </Text>
+                      </MenuTrigger>
+                    <MenuOptions
+                      style={{
+                        justifyContent: 'flex-start',
+                      }}>
+                      <MenuOption value={1} text="Edit" />
+                      <MenuOption value={2}>
+                        <Text
+                          style={{
+                            color: 'red',
+                          }}>
+                          Remove
+                        </Text>
+                      </MenuOption>
+                      <MenuOption value={3} disabled={true} text=" " />
+                    </MenuOptions>
+                  </Menu>
+                </MenuProvider>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View style={styles.taskBoxSection3}>
+          <View style={styles.inClockBox}>
+            <Icon name="clock-o" color="black" size={20} />
+            <Text style={{ marginLeft: 5}}>{val.showDateItem}</Text>
+          </View>
+          <View style={styles.inDateBox}>
+            <Icon name="calendar" color="black" size={20} />
+            <Text style={{ marginLeft: 5}}>{val.showTimeItem}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+      ))
     };
+*/
+    /*
+  const renderedGoods = taskDetailsState && taskDetailsState.allTask.map(value => {
+      return <View><Text>{value.taskNameItem}</Text></View>
+  });
+  */
+  //console.log(taskDetailsState)
 
-    return taskDetailsState && taskDetailsState.map(val => (
-            <View style={{flexDirection: 'column'}}>
-                {val.descriptionItem.map(value => (
-                    <Text>{value}</Text>
-                ))}
-            </View>
-       ))
+ const TaskPrint = () => {
+  if(isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+   return taskDetailsState && taskDetailsState.map((val, ind) => (
+    <View style={styles.container}>
+        <Text>{val.descriptionItem}</Text>
+    </View>
+   ))
+ };
+
+    return (
+        <View>
+          <TaskPrint />
+        </View>
+     )
 };
 
 const styles = StyleSheet.create({

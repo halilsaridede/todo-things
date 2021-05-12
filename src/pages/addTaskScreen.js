@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -44,18 +44,16 @@ import CategoryBox from '../components/categoryBox';
 const {height} = Dimensions.get('window');
 
 const AddTaskScreen = () => {
-  let [taskDetailItems, setTaskDetailItems] = useState({
-    taskNameItem: [],
-    descriptionItem: [],
-    showDateItem: [],
-    showTimeItem: [],
+    //const [taskDetailItems, setTaskDetailItems] = useState({});
+  const [taskDetailItems, setTaskDetailItems] = useState({
+    taskNameItem: {},
+    descriptionItem: {},
+    showDateItem: {},
+    showTimeItem: {},
   });
- /*
-  let [taskDetail, setTaskDetail] = useState([
-      { id: [], value: [] },
-  ]);
-  */
-  const [task, setTask] = useState([]);
+  const [task, setTask] = useState({
+    allTask: []
+  });
   const [taskDetailsState, setTaskDetailsState] = useState([]);
   const [taskNameInput, setTaskNameInput] = useState('');
   const [description, setDescription] = useState('');
@@ -85,7 +83,6 @@ const AddTaskScreen = () => {
     },
   });
   */
-
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
   //DateTimePicker
@@ -124,7 +121,27 @@ const AddTaskScreen = () => {
         try {
           const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
           let parse = JSON.parse(itemsTask);
-            console.log(parse)
+          console.log(parse);
+          //await AsyncStorage.removeItem('taskDetailsStorage')
+          //.then(response => console.log('remove item'))
+          /*
+          parse.map((val, ind) => {
+            console.log(val)
+          });
+          */
+          /*
+          const uuid = await AsyncStorage.getItem("UID123");
+          let parseu = JSON.parse(uuid);
+          console.log(parseu);
+          */
+            /*
+            let convert =  { ...parse};
+            Object.keys(convert).map(function(key, index) {
+              let convertion =  { ...convert[key].descriptionItem };
+                convertion.map(e => console.log(e))
+            })
+            */
+            //parse.map(val => console.log(val.taskNameItem))
             //parse.map(c => console.log(c))
             /*
           const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
@@ -169,7 +186,16 @@ const AddTaskScreen = () => {
           console.log(error);
         }
     };
-    let arrayItems = [];
+
+  let arrayTrial = [{
+    taskNameItem: {},
+    descriptionItem: {},
+    showDateItem: {},
+    showTimeItem: {},
+  }];
+
+  let arrays = [];
+
   const saveHandle = async () => {
     if (taskNameInput === '') {
       alert('Please enter task name');
@@ -185,19 +211,117 @@ const AddTaskScreen = () => {
     }
     else {
         try {
+          //arrayTrial.map(e => console.log(e[taskNameItem]))
+          
+          let obj = {
+            "taskNameItem": taskNameInput.toString(),
+            "descriptionItem": description.toString(),
+            "showDateItem": showDate.toString(),
+            "showTimeItem": showTime.toString(),
+          };
+
+          arrays.push(obj);
+          const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
+          let itemsTaskCopy = itemsTask;
+          let parse = JSON.parse(itemsTaskCopy);
+          if(parse === null) {
+            await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(arrays));
+          } 
+          else {
+            parse.push(obj);
+            itemsTaskCopy = JSON.stringify(parse);
+            await AsyncStorage.setItem("taskDetailsStorage", itemsTaskCopy);
+          }
+
+
           setTaskDetailItems(prevState => {
             return {
-              taskNameItem: [...prevState.taskNameItem, taskNameInput],
-              descriptionItem: [...prevState.descriptionItem, description],
-              showDateItem: [...prevState.showDateItem, showDate],
-              showTimeItem: [...prevState.showTimeItem, showTime],
+              "taskNameItem": taskNameInput,
+              "descriptionItem": description,
+              "showDateItem": showDate,
+              "showTimeItem": showTime,
             };
-          });
-            //arrayItems.push(taskDetailItems);
-            setTask(
-                [taskDetailItems]
-              );
-            await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(task));
+          })
+
+            setTask(prevState => {
+              return {
+                allTask: [...prevState.allTask, taskDetailItems]
+              }
+              }
+            );
+
+           // await AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(task));
+
+           //const itemsTask = await AsyncStorage.getItem("taskDetailsStorage");
+            //let parse = JSON.parse(itemsTask);
+
+            //wait AsyncStorage.setItem("taskDetailsStorage", JSON.stringify(taskNameInput));
+            /*
+
+            AsyncStorage.setItem(
+              'taskDetailsStorage',
+              JSON.stringify(task),
+              () => {
+                AsyncStorage.mergeItem(
+                  'taskDetailsStorage',
+                  JSON.stringify(parse),
+                  () => {
+                    AsyncStorage.getItem('taskDetailsStorage', (err, result) => {
+                      console.log(result);
+                      console.log(err);
+                    });
+                  }
+                );
+              }
+            );
+            */
+
+            //const getAsyncStorageTask = await AsyncStorage.getItem("taskDetailsStorage");
+            //let parse = JSON.parse(getAsyncStorageTask);
+            /*
+
+            AsyncStorage.setItem('taskDetailsStorage', JSON.stringify(task),
+              () => {
+                AsyncStorage.mergeItem('taskDetailsStorage', JSON.stringify(parse),
+                  () => {
+                    AsyncStorage.getItem('taskDetailsStorage', (err, result) => {
+                      console.log(result);
+                    });
+                  }
+                );
+              }
+            );
+            */
+
+           /*
+            let UID123_object = {
+              name: 'Chris',
+              age: 30,
+              traits: { hair: 'brown', eyes: 'brown' }
+            };
+
+            let UID123_delta = {
+              age: 31,
+              traits: { eyes: 'yellow', shoe_size: 10 }
+            };
+
+            AsyncStorage.setItem(
+              'UID123',
+              JSON.stringify(UID123_object),
+              () => {
+                AsyncStorage.mergeItem(
+                  'UID123',
+                  JSON.stringify(UID123_delta),
+                  () => {
+                    AsyncStorage.getItem('UID123', (err, result) => {
+                      console.log(result);
+                    });
+                  }
+                );
+              }
+            );
+            */
+
           /*
           setTaskDetail(prevState => {
             taskDetail[0].id.push([...prevState.id, taskNameInput]);
@@ -269,13 +393,16 @@ const AddTaskScreen = () => {
         */
           setTaskNameInput('');
           setDescription('');
-          forceUpdate();
           //Actions.home();
         } catch (error) {
           console.log(error);
         }
     }
   };
+
+  useEffect(() => {
+    return () => {};
+  }, [setTaskDetailItems, setTask])
 
   return (
     <KeyboardAvoidingView style={styles.container}>

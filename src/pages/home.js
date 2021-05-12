@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 
-import {ScrollView, StyleSheet, Text, useColorScheme, View} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View} from 'react-native';
 
 import {Container, Button, Left, Right, Body} from 'native-base';
 
@@ -9,6 +9,8 @@ import {Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
 import CalendarStrip from 'react-native-calendar-strip';
+
+import SplashScreen from 'react-native-splash-screen';
 
 import {
   widthPercentageToDP as wp,
@@ -67,11 +69,16 @@ const Home = () => {
   };
 
   useEffect(async () => {
+    SplashScreen.hide();
     forceUpdate();
   }, [forceUpdate])
 
   return (
     <View style={styles.container}>
+      <StatusBar 
+        barStyle="light-content"
+        backgroundColor="white"
+      />
       <View style={styles.containerIn1}>
         <HeaderComponent />
       </View>
