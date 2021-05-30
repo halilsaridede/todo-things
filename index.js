@@ -7,7 +7,7 @@ import PushNotification from "react-native-push-notification";
 
  PushNotification.createChannel(
     {
-      channelId: "channel-id", // (required)
+      channelId: "todo", // (required)
       channelName: "My channel", // (required)
       channelDescription: "A channel to categorise your notifications", // (optional) default: undefined.
       playSound: false, // (optional) default: true
